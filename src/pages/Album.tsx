@@ -54,7 +54,9 @@ export default function Album() {
                     <span className="truncate">{s.title}</span>
                     {listened.has(s.id) && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-gold glow-orb" aria-label="lit" />}
                   </p>
-                  <p className="mt-0.5 truncate text-xs text-taupe">{s.location}</p>
+                  <p className="mt-0.5 truncate text-xs text-taupe">
+                    {s.location} · {Math.floor(s.duration / 60)}:{String(Math.round(s.duration % 60)).padStart(2, "0")}
+                  </p>
                 </button>
                 <img
                   src={s.sceneImage}

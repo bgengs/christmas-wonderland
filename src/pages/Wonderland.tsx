@@ -2,24 +2,25 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router";
 import Snowfall from "@/components/Snowfall";
 import Finale from "@/components/Finale";
-import { SONGS } from "@/data/songs";
+import { LOCATIONS, SONGS, locationSongs } from "@/data/songs";
 import { usePlayer } from "@/store/player";
 
 // ─── The Christmas Map ───────────────────────────────────────────────────────
-// An illustrated winter village. Each location is a song's world; as visitors
-// listen, lights appear across the village until the whole Wonderland glows.
+// An illustrated winter village. Each location is home to two songs; as
+// visitors listen, lights appear across the village until the whole
+// Wonderland glows.
 
 const SPOTS: Record<string, { x: number; y: number; icon: "house" | "window" | "mail" | "chapel" | "train" | "tree" | "lake" | "garden" }> = {
-  "christmas-morning": { x: 200, y: 268, icon: "house" },
-  "cookies-in-the-kitchen": { x: 148, y: 318, icon: "window" },
-  "the-fireplace-song": { x: 252, y: 318, icon: "window" },
-  "letters-to-santa": { x: 88, y: 222, icon: "mail" },
-  "front-porch-lights": { x: 200, y: 348, icon: "window" },
-  "northern-lights": { x: 108, y: 512, icon: "lake" },
-  "the-christmas-train": { x: 66, y: 428, icon: "train" },
-  "candlelight-chapel": { x: 312, y: 196, icon: "chapel" },
-  "the-giving-tree": { x: 316, y: 372, icon: "tree" },
-  "memory-garden": { x: 292, y: 536, icon: "garden" },
+  "The Family House": { x: 200, y: 268, icon: "house" },
+  "The Kitchen": { x: 148, y: 318, icon: "window" },
+  "The Fireplace": { x: 252, y: 318, icon: "window" },
+  "Letters to Santa": { x: 88, y: 222, icon: "mail" },
+  "The Front Porch": { x: 200, y: 348, icon: "window" },
+  "The Frozen Lake": { x: 108, y: 512, icon: "lake" },
+  "The Christmas Train": { x: 66, y: 428, icon: "train" },
+  "The Chapel": { x: 312, y: 196, icon: "chapel" },
+  "The Giving Tree": { x: 316, y: 372, icon: "tree" },
+  "The Memory Garden": { x: 292, y: 536, icon: "garden" },
 };
 
 function Pines({ y, opacity }: { y: number; opacity: number }) {
@@ -147,7 +148,7 @@ export default function Wonderland() {
         </p>
 
         {/* progress of lights */}
-        <div className="mx-auto mt-4 flex max-w-[240px] justify-center gap-1.5">
+        <div className="mx-auto mt-4 flex max-w-[240px] flex-wrap justify-center gap-1.5">
           {SONGS.map((s) => (
             <span
               key={s.id}
@@ -198,18 +199,21 @@ export default function Wonderland() {
           <ellipse cx="108" cy="528" rx="58" ry="20" fill="#4a6494" opacity="0.9" />
           <ellipse cx="108" cy="524" rx="46" ry="13" fill="#6f8cc2" opacity="0.55" />
 
-          {/* song locations */}
-          {SONGS.map((s) => {
-            const spot = SPOTS[s.id];
-            const lit = listened.has(s.id);
+          {/* song locations — two songs live at each place */}
+          {LOCATIONS.map((loc) => {
+            const spot = SPOTS[loc];
+            const songs = locationSongs(loc);
+            const lit = songs.some((s) => listened.has(s.id));
+            // step into the first song not yet heard, else the first song
+            const target = songs.find((s) => !listened.has(s.id)) ?? songs[0];
             return (
               <g
-                key={s.id}
+                key={loc}
                 transform={`translate(${spot.x}, ${spot.y})`}
-                onClick={() => navigate(`/song/${s.id}`)}
+                onClick={() => target && navigate(`/song/${target.id}`)}
                 className="cursor-pointer"
                 role="button"
-                aria-label={`${s.location} — ${s.title}`}
+                aria-label={`${loc} — ${songs.map((s) => s.title).join(", ")}`}
               >
                 {lit && <circle r="30" fill="url(#spotGlow)" />}
                 <Icon type={spot.icon} lit={lit} />
@@ -220,7 +224,7 @@ export default function Wonderland() {
                   fill={lit ? "#ffdca0" : "#a89e8d"}
                   style={{ fontFamily: "Jost, sans-serif", letterSpacing: "0.06em" }}
                 >
-                  {s.location}
+                  {loc}
                 </text>
                 {/* generous tap target */}
                 <circle r="30" fill="transparent" />
