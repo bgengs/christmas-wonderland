@@ -71,7 +71,7 @@ export default function TopNav() {
             </button>
           ))}
           <p className="mt-8 text-xs tracking-[0.2em] text-taupe uppercase">
-            Two albums · One family · Ten worlds
+            Two albums · One family · Twenty worlds
           </p>
         </nav>
       </div>

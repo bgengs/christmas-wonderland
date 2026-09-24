@@ -11,12 +11,12 @@ import { usePlayer } from "@/store/player";
 
 const SCENE_SECONDS = 30;
 const JOURNEY = [
-  "christmas-morning",
-  "the-fireplace-song",
-  "the-christmas-train",
-  "northern-lights",
-  "the-giving-tree",
-  "memory-garden",
+  "you-never-forgot-us",
+  "the-first-noel",
+  "together-once-more",
+  "o-holy-night",
+  "no-name-on-it",
+  "love-is-still-watching",
 ];
 
 export default function Journey() {

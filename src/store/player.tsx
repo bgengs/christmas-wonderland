@@ -58,7 +58,20 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         });
       }
     });
-    return () => engine.setOnTick(null);
+    // when a recording ends, drift into the next song like a snow-globe radio
+    engine.setOnEnded(() => {
+      const cur = engine.currentSong;
+      const i = cur ? SONGS.findIndex((s) => s.id === cur.id) : -1;
+      const song = SONGS[(i + 1) % SONGS.length];
+      engine.play(song);
+      setCurrent(song);
+      setPlaying(true);
+      setElapsed(0);
+    });
+    return () => {
+      engine.setOnTick(null);
+      engine.setOnEnded(null);
+    };
   }, []);
 
   const value = useMemo<PlayerState>(() => ({
