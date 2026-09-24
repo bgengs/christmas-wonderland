@@ -46,4 +46,5 @@ docker run -p 3000:3000 --env-file .env christmas-wonderland
 
 - `.env` is required (see `.env.example`) and is intentionally not committed.
 - `package-lock.json` and the binary media under `public/assets/` are delivered with the platform deployment rather than this repository; run `npm install` to regenerate the lockfile.
+- `src/components/ui/` contains only the shadcn/ui components the app actually imports; add more any time with `npx shadcn@latest add <name>`.
 - "Christmas isn't one perfect day. It's the people we carry with us."
