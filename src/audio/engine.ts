@@ -1,9 +1,10 @@
 import type { Song, Ambience } from "@/data/songs";
 
 // ─── Playback engine ─────────────────────────────────────────────────────────
-// Streams each song's real recording, with a looping scene ambience bed
-// (fireplace / winter wind / music box) faded in underneath, so the
-// snow-globe atmosphere carries through every scene.
+// Streams each song's real recording. Real songs carry their own atmosphere —
+// no ambience beds underneath (a fireplace loop under a recording just sounds
+// like a noisy dining room). startAmbience() is kept for the v1 generative
+// mode only.
 
 const AMBIENCE_SRC: Record<Ambience, string> = {
   fireplace: "/assets/audio/fireplace.mp3",
@@ -42,6 +43,7 @@ class MusicEngine {
 
   async play(song: Song) {
     this.detachAudio();
+    this.stopAmbience();
     this.song = song;
     const el = new Audio(song.audio);
     el.preload = "auto";
@@ -52,12 +54,10 @@ class MusicEngine {
     };
     el.onended = () => {
       this.playing = false;
-      this.fadeAmbience(0);
       if (this.onEnded) this.onEnded();
     };
     this.audio = el;
     this.playing = true;
-    this.startAmbience(song.ambience);
     try {
       await el.play();
     } catch {
@@ -69,13 +69,11 @@ class MusicEngine {
     if (!this.playing || !this.audio) return;
     this.audio.pause();
     this.playing = false;
-    this.fadeAmbience(0);
   }
 
   async resume() {
     if (!this.song || this.playing || !this.audio) return;
     this.playing = true;
-    this.fadeAmbience(0.16);
     try {
       await this.audio.play();
     } catch {
@@ -87,7 +85,6 @@ class MusicEngine {
     this.playing = false;
     this.song = null;
     this.detachAudio();
-    this.stopAmbience();
   }
 
   startAmbience(kind: Ambience) {
