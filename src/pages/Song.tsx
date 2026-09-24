@@ -12,7 +12,6 @@ export default function Song() {
   const song = songById(id ?? "") ?? SONGS[0];
   const { current, playing, toggle, favorites, toggleFavorite, listened } = usePlayer();
 
-  const [showLyrics, setShowLyrics] = useState(false);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [noteSent, setNoteSent] = useState(false);
@@ -134,30 +133,6 @@ export default function Song() {
         <p className="fade-up mt-8 border-l-2 border-gold/50 pl-4 font-display text-lg italic leading-relaxed text-cream/85" style={{ animationDelay: "0.4s" }}>
           {song.story}
         </p>
-
-        {/* lyrics */}
-        <div className="fade-up mt-8" style={{ animationDelay: "0.5s" }}>
-          <button
-            onClick={() => setShowLyrics((v) => !v)}
-            className="flex items-center gap-2 text-xs tracking-[0.25em] text-gold uppercase"
-          >
-            Lyrics
-            <svg width="10" height="10" viewBox="0 0 10 10" className={`transition-transform ${showLyrics ? "rotate-180" : ""}`}>
-              <path d="M1 3 L5 7 L9 3" stroke="currentColor" strokeWidth="1.4" fill="none" />
-            </svg>
-          </button>
-          {showLyrics && (
-            <div className="fade-up mt-4 space-y-1.5 rounded-xl border border-white/10 bg-black/30 p-5 backdrop-blur-sm">
-              {song.lyrics.map((line, i) =>
-                line === "" ? (
-                  <div key={i} className="h-3" />
-                ) : (
-                  <p key={i} className="font-display text-lg leading-relaxed text-cream/85">{line}</p>
-                ),
-              )}
-            </div>
-          )}
-        </div>
 
         {/* reactions */}
         <div className="fade-up mt-8" style={{ animationDelay: "0.6s" }}>
